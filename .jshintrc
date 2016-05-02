@@ -7,7 +7,7 @@
   "nonbsp": true,
   "nonew": true,
   "undef": true,
-  "curly": true,
+  "curly": false,
   "node": true,
   "esnext": false,
   "mocha": true
