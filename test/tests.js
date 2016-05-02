@@ -12,7 +12,7 @@ describe("tern-abitbol", function() {
 
     describe("properties", function() {
 
-        it("finds properties from Class.$extend", function() {
+        it("are found from Class.$extend", function() {
             return queryCompletion(server, "simple-class.js", "var simpleClass = new SimpleClass(); simpleClass.")
                 .then(function(response) {
                     var properties = lodash.map(response.completions, "name");
@@ -37,7 +37,7 @@ describe("tern-abitbol", function() {
 
     describe("computed properties", function() {
 
-        it("finds auto-generated computed properties", function() {
+        it("auto-generated computed properties are avaiable for autocompletion", function() {
             return queryCompletion(server, "simple-class.js", "var simpleClass = new SimpleClass(); simpleClass.")
                 .then(function(response) {
                     var properties = lodash.map(response.completions, "name");
@@ -48,7 +48,7 @@ describe("tern-abitbol", function() {
                 });
         });
 
-        it("propagates the type from the getter to the computed properties", function() {
+        it("types are propagated from the getter to the computed property", function() {
             return queryCompletion(server, "simple-class.js", "var simpleClass = new SimpleClass(); simpleClass.")
                 .then(function(response) {
                     var completions = response.completions;
@@ -59,6 +59,79 @@ describe("tern-abitbol", function() {
                 });
         });
 
+    });
+
+    describe("constructor", function() {
+        // TODO
+    });
+
+    describe("abitbol special properties", function() {
+        // TODO
+    });
+
+    describe("inheritance", function() {
+
+        it("classes inherites parent's classes properties", function() {
+            return queryCompletion(server, "inheritance.js", "var c = new ClassC(); c.")
+                .then(function(response) {
+                    var properties = lodash.map(response.completions, "name");
+
+                    expect(properties).to.contain("methodA");
+                    expect(properties).to.contain("getValueA");
+                    expect(properties).to.contain("valueA");
+                    expect(properties).to.contain("attrA");
+
+                    expect(properties).to.contain("methodB");
+                    expect(properties).to.contain("getValueB");
+                    expect(properties).to.contain("valueB");
+                    expect(properties).to.contain("attrB");
+
+                    expect(properties).to.contain("attrC");
+                });
+        });
+
+        it("parent classes are not affected by inheritance", function() {
+            return queryCompletion(server, "inheritance.js", "var c = new ClassC(); var a = new ClassA(); a.")
+                .then(function(response) {
+                    var properties = lodash.map(response.completions, "name");
+
+                    expect(properties).to.contain("methodA");
+                    expect(properties).to.contain("getValueA");
+                    expect(properties).to.contain("valueA");
+                    expect(properties).to.contain("attrA");
+
+                    expect(properties).not.to.contain("methodB");
+                    expect(properties).not.to.contain("getValueB");
+                    expect(properties).not.to.contain("valueB");
+                    expect(properties).not.to.contain("attrB");
+
+                    expect(properties).not.to.contain("attrC");
+                });
+        });
+
+        it("properties of child classes override the parent's ones", function() {
+            return queryCompletion(server, "inheritance.js", "var c = new ClassC(); c.")
+                .then(function(response) {
+                    var completions = response.completions;
+                    expect(lodash.find(completions, {name: "attrB"}).type).to.contain("string");
+                });
+        });
+
+        it.skip("constructor of child class overrides the one of its parent", function() {
+            // TODO
+        });
+    });
+
+    describe("mixins (__include__)", function() {
+        // TODO
+    });
+
+    describe("class static properties (__classvars__)", function() {
+        // TODO
+    });
+
+    describe("class introspection object ($map)", function() {
+        // TODO
     });
 
     //it("test", function() {
