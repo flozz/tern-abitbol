@@ -70,7 +70,7 @@ function _getterToPropertyName(name) {
 
 
 infer.registerFunction("abitbolExtend", function(_self, args, argNodes) {
-    var hidePrivate = true;
+    var hidePrivate = false;
     try {
         var abitbolClass = new infer.Fn(getUniqClassId(), new infer.AVal(), [], [], new infer.AVal());
         var abitbolClassPrototype = abitbolClass.getProp("prototype").getType();
