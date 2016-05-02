@@ -1,0 +1,29 @@
+{
+  "name": "tern-abitbol",
+  "version": "0.0.0",
+  "description": "Tern.js plugin to autocomplete Abitbol classes",
+  "main": "abitbol.js",
+  "scripts": {
+    "test": "mocha"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/flozz/tern-abitbol.git"
+  },
+  "keywords": [
+    "tern",
+    "ternjs",
+    "autocomplete",
+    "abitbol"
+  ],
+  "author": "Fabien LOISON <http://www.flozz.fr>",
+  "license": "BSD-3-Clause",
+  "devDependencies": {
+    "abitbol": "^1.0.3",
+    "expect.js": "^0.3.1",
+    "mocha": "^2.4.5",
+    "q": "^1.4.1",
+    "tern": "^0.18.0",
+    "uuid": "^2.0.2"
+  }
+}
