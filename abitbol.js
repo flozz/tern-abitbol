@@ -14,7 +14,7 @@ function _getUniqClassId() {
 }
 
 function _isPrivate(name) {
-    return name.indexOf("_") === 0 && name != "__init__";
+    return name.indexOf("_") === 0;
 }
 
 function _isGetter(name) {
@@ -26,7 +26,7 @@ function _isAbitbolSpecialProperty(name) {
         "$extend", "$map", "$class",
         "$data", "$super",
         "$name", "$computedPropertyName",
-        "__include__", "__classvars__"
+        "__include__", "__classvars__", "__init__"
     ];
     return specialProp.indexOf(name) >= 0;
 }

@@ -16,7 +16,6 @@ describe("tern-abitbol", function() {
             return queryCompletion(server, "simple-class.js", "var simpleClass = new SimpleClass(); simpleClass.")
                 .then(function(response) {
                     var properties = lodash.map(response.completions, "name");
-                    expect(properties).to.contain("__init__");
                     expect(properties).to.contain("method1");
 
                     expect(properties).to.contain("attrArray");
