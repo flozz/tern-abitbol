@@ -66,7 +66,109 @@ describe("tern-abitbol", function() {
     });
 
     describe("abitbol special properties", function() {
-        // TODO
+
+        describe("$exend", function() {
+
+            it("is available as static method", function() {
+                return queryCompletion(server, "simple-class.js", "SimpleClass.")
+                    .then(function(response) {
+                        var properties = lodash.map(response.completions, "name");
+                        expect(properties).to.contain("$extend");
+                    });
+            });
+
+            it("is not available as instance method", function() {
+                return queryCompletion(server, "simple-class.js", "var simpleClass = new SimpleClass(); simpleClass.")
+                    .then(function(response) {
+                        var properties = lodash.map(response.completions, "name");
+                        expect(properties).not.to.contain("$extend");
+                    });
+            });
+
+        });
+
+        describe("$class", function() {
+
+            it("is available as static method", function() {
+                return queryCompletion(server, "simple-class.js", "SimpleClass.")
+                    .then(function(response) {
+                        var properties = lodash.map(response.completions, "name");
+                        expect(properties).to.contain("$class");
+                    });
+            });
+
+            it("is available as instance method", function() {
+                return queryCompletion(server, "simple-class.js", "var simpleClass = new SimpleClass(); simpleClass.")
+                    .then(function(response) {
+                        var properties = lodash.map(response.completions, "name");
+                        expect(properties).to.contain("$class");
+                    });
+            });
+
+        });
+
+        describe("$map", function() {
+
+            it("is available as static method", function() {
+                return queryCompletion(server, "simple-class.js", "SimpleClass.")
+                    .then(function(response) {
+                        var properties = lodash.map(response.completions, "name");
+                        expect(properties).to.contain("$map");
+                    });
+            });
+
+            it("is available as instance method", function() {
+                return queryCompletion(server, "simple-class.js", "var simpleClass = new SimpleClass(); simpleClass.")
+                    .then(function(response) {
+                        var properties = lodash.map(response.completions, "name");
+                        expect(properties).to.contain("$map");
+                    });
+            });
+
+            // TODO introspection data into $map
+
+        });
+
+        describe("$data", function() {
+
+            it("is not available as static method", function() {
+                return queryCompletion(server, "simple-class.js", "SimpleClass.")
+                    .then(function(response) {
+                        var properties = lodash.map(response.completions, "name");
+                        expect(properties).not.to.contain("$data");
+                    });
+            });
+
+            it("is available as instance method", function() {
+                return queryCompletion(server, "simple-class.js", "var simpleClass = new SimpleClass(); simpleClass.")
+                    .then(function(response) {
+                        var properties = lodash.map(response.completions, "name");
+                        expect(properties).to.contain("$data");
+                    });
+            });
+
+        });
+
+        describe("$super", function() {
+
+            it("is not available as static method", function() {
+                return queryCompletion(server, "simple-class.js", "SimpleClass.")
+                    .then(function(response) {
+                        var properties = lodash.map(response.completions, "name");
+                        expect(properties).not.to.contain("$super");
+                    });
+            });
+
+            it("is available as instance method", function() {
+                return queryCompletion(server, "simple-class.js", "var simpleClass = new SimpleClass(); simpleClass.")
+                    .then(function(response) {
+                        var properties = lodash.map(response.completions, "name");
+                        expect(properties).to.contain("$super");
+                    });
+            });
+
+        });
+
     });
 
     describe("inheritance", function() {

@@ -14,11 +14,38 @@ function _getUniqClassId() {
 }
 
 function _isPrivate(name) {
-    return name.indexOf("_") === 0;
+    return name.indexOf("_") === 0 && name != "__init__";
 }
 
 function _isGetter(name) {
     return name.indexOf("get") === 0 || name.indexOf("is") === 0 || name.indexOf("has") === 0;
+}
+
+function _isAbitbolSpecialProperty(name) {
+    var specialProp = [
+        "$extend", "$map", "$class",
+        "$data", "$super",
+        "$name", "$computedPropertyName",
+        "__include__", "__classvars__"
+    ];
+    for (var i = 0 ; i < specialProp.length ; i++) {
+        if (specialProp[i] == name) {
+            return true;
+        }
+    }
+    return false;
+}
+
+function _isJsPropertyToSkip(name) {
+    var jsProp = [
+        "constructor", "prototype"
+    ];
+    for (var i = 0 ; i < jsProp.length ; i++) {
+        if (jsProp[i] == name) {
+            return true;
+        }
+    }
+    return false;
 }
 
 function _getterToPropertyName(name) {
@@ -59,8 +86,20 @@ var defs = {
         "$map": {
             "!type": "Obj"
         },
-        "prototype": {}
-
+        "prototype": {
+            "$class": {
+                "!type": "Class"
+            },
+            "$map": {
+                "!type": "Obj"
+            },
+            "$data": {
+                "!type": "Obj"
+            },
+            "$super": {
+                "!type": "fn()"
+            }
+        }
     }
 
 };
@@ -75,13 +114,21 @@ infer.registerFunction("abitbolExtend", function(_self, args, argNodes) {
     var abitbolClassPrototype = abitbolClass.getProp("prototype").getType();
 
     // parent class static properties
-    // TODO
+    _self.forAllProps(function(prop, val, local) {
+        if (!local) return;
+        if (_isJsPropertyToSkip(prop)) return;
+        if (_isAbitbolSpecialProperty(prop)) return;
+        if (_isPrivate(prop) && hidePrivate) return;
+
+        val.propagate(abitbolClass.defProp(prop));
+    });
 
     // parent class properties
     var parentClassProperties = _self.getProp("prototype").getType();
     parentClassProperties.forAllProps(function(prop, val, local) {
         if (!local) return;
-        if (prop == "prototype") return;
+        if (_isJsPropertyToSkip(prop)) return;
+        if (_isAbitbolSpecialProperty(prop)) return;
         if (_isPrivate(prop) && hidePrivate) return;
 
         val.propagate(abitbolClassPrototype.defProp(prop));
@@ -115,25 +162,31 @@ infer.registerFunction("abitbolExtend", function(_self, args, argNodes) {
     // new class constructor
     // TODO
 
-    // abitbol $extend
-    // TODO
-
-    // abitbol $class
-    // TODO
-
-    // abitbol $data
-    // TODO
-
-    // abitbol $map
-    // TODO
-
-    // FIXME
+    // abitbol special properties
+    // $extend
     _self.forAllProps(function(prop, val, local) {
-        if (!local) return;
-        if (prop == "prototype") return;
-
+        if (prop !== "$extend") return;
         val.propagate(abitbolClass.defProp(prop));
     });
+
+    // abitbol $class
+    abitbolClass.propagate(abitbolClass.defProp("$class"));
+    abitbolClass.propagate(abitbolClassPrototype.defProp("$class"));
+
+    // fill abitbol $map
+    var mapStaticProp = abitbolClass.defProp("$map");
+    mapStaticProp.addType(new infer.Obj(true, "$map"));
+    var mapProp = abitbolClassPrototype.defProp("$map");
+    mapProp.addType(new infer.Obj(true, "$map"));
+    // TODO fill $map with introspection data
+
+    // abitbol $data
+    var dataProp = abitbolClassPrototype.defProp("$data");
+    dataProp.addType(new infer.Obj(true, "$data"));
+
+    // abitbol $super
+    var superProp = abitbolClassPrototype.defProp("$super");
+    superProp.addType(new infer.Fn("$super", new infer.AVal(), [], [], new infer.AVal()));
 
     return abitbolClass;
 });
