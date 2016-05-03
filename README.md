@@ -42,7 +42,7 @@ least the following lines:
 ```
 
 Please read the Tern documentation for more information about the
-`.ter-project` file:
+`.tern-project` file:
 
 * http://ternjs.net/doc/manual.html#configuration
 
