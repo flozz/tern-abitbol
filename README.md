@@ -6,3 +6,63 @@
 
 > Tern.js plugin to autocomplete Abitbol classes
 
+[Tern][tern] is a stand-alone code-analysis engine for JavaScript that can be used as
+text editor plugin to provide Javascript autocompletion.
+
+Tern [Abitbol](abitbol) is a Tern plugin that allows it to work with the
+Abitbol inheritance model (so it makes the autocompletion working with the
+Abitbol classes).
+
+
+## How To Install Abitbol Tern Plugin
+
+To install Abitbol Tern Plugin, you first have to install the Tern plugin for
+your favorite editor. You can find instruction here:
+
+* http://ternjs.net/doc/manual.html#editor
+
+The go to the folder where your tern plugin is installed (it should contain a `node_modules` folder), then simply install the Abitbol Tern Plugin in it:
+
+    npm install tern-abitbol
+
+
+## How To Use Abitbol Tern Plugin In A Project
+
+To use Abitbol Tern Plugin to autocomplete your project, you should create
+a `.tern-project` file in the project's root folder, that should contain at
+least the following lines:
+
+```json
+{
+  "plugins": {
+    "node": {},
+    "abitbol": {}
+  }
+}
+```
+
+Please read the Tern documentation for more information about the
+`.ter-project` file:
+
+* http://ternjs.net/doc/manual.html#configuration
+
+A more complete example:
+
+```json
+{
+  "ecmaVersion": 6,
+  "libs": [],
+  "plugins": {
+    "node": {},
+    "abitbol": {}
+  },
+  "loadEagerly": [
+    "./node_modules/photonui/src/photonui.js",
+    "./app/js/**/*.js"
+  ]
+}
+```
+
+
+[tern]: http://ternjs.net/
+[abitbol]: https://github.com/wanadev/abitbol/
