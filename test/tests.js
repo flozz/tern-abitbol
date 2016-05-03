@@ -171,6 +171,53 @@ describe("tern-abitbol", function() {
 
     });
 
+
+    describe("mixins (__include__)", function() {
+        // TODO
+    });
+
+    describe("class static properties (__classvars__)", function() {
+
+        it("are attached to the class", function() {
+            return queryCompletion(server, "static-properties.js", "StaticPropClass.")
+                .then(function(response) {
+                    var properties = lodash.map(response.completions, "name");
+                    expect(properties).to.contain("staticMethod1");
+                    expect(properties).to.contain("staticAttr1");
+                });
+        });
+
+        it("are not attached to the class instance", function() {
+            return queryCompletion(server, "static-properties.js", "var s = new StaticPropClass(); s.")
+                .then(function(response) {
+                    var properties = lodash.map(response.completions, "name");
+                    expect(properties).not.to.contain("staticMethod1");
+                    expect(properties).not.to.contain("staticAttr1");
+                });
+        });
+
+        it("__classvars__ is not included in classes static properties", function() {
+            return queryCompletion(server, "static-properties.js", "StaticPropClass.")
+                .then(function(response) {
+                    var properties = lodash.map(response.completions, "name");
+                    expect(properties).not.to.contain("__classvars__");
+
+                });
+        });
+
+        it("__classvars__ is not included in classes properties", function() {
+            return queryCompletion(server, "static-properties.js", "var s = new StaticPropClass(); s.")
+                .then(function(response) {
+                    var properties = lodash.map(response.completions, "name");
+                    expect(properties).not.to.contain("__classvars__");
+                });
+        });
+    });
+
+    describe("class introspection object ($map)", function() {
+        // TODO
+    });
+
     describe("inheritance", function() {
 
         it("classes inherites parent's classes properties", function() {
@@ -222,23 +269,41 @@ describe("tern-abitbol", function() {
         it.skip("constructor of child class overrides the one of its parent", function() {
             // TODO
         });
-    });
 
-    describe("mixins (__include__)", function() {
-        // TODO
-    });
+        it("classes inherites parent's classes static properties", function() {
+            return queryCompletion(server, "static-properties.js", "StaticPropClass2.")
+                .then(function(response) {
+                    var properties = lodash.map(response.completions, "name");
 
-    describe("class static properties (__classvars__)", function() {
-        // TODO
-    });
+                    expect(properties).to.contain("staticMethod1");
+                    expect(properties).to.contain("staticAttr1");
 
-    describe("class introspection object ($map)", function() {
-        // TODO
-    });
+                    expect(properties).to.contain("staticMethod2");
+                    expect(properties).to.contain("staticAttr2");
+                });
+        });
 
-    //it("test", function() {
-        //return queryCompletion(server, "simple-class.js", "var simpleClass = new SimpleClass(); simpleClass.")
-            //.then(r => console.log(r));
-    //});
+        it("parent classes are not affected by child's static properties", function() {
+            return queryCompletion(server, "static-properties.js", "var s = new StaticPropClass2(); StaticPropClass.")
+                .then(function(response) {
+                    var properties = lodash.map(response.completions, "name");
+
+                    expect(properties).to.contain("staticMethod1");
+                    expect(properties).to.contain("staticAttr1");
+
+                    expect(properties).not.to.contain("staticMethod2");
+                    expect(properties).not.to.contain("staticAttr2");
+                });
+        });
+
+        it("child's static properties overrides the parent's one", function() {
+            return queryCompletion(server, "static-properties.js", "StaticPropClass3.")
+                .then(function(response) {
+                    var completions = response.completions;
+                    expect(lodash.find(completions, {name: "staticAttr1"}).type).to.contain("bool");
+                });
+        });
+
+    });
 
 });

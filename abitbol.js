@@ -113,6 +113,9 @@ infer.registerFunction("abitbolExtend", function(_self, args, argNodes) {
     var abitbolClass = new infer.Fn(_getUniqClassId(), new infer.AVal(), [], [], new infer.AVal());
     var abitbolClassPrototype = abitbolClass.getProp("prototype").getType();
 
+    var parentClassProperties = _self.getProp("prototype").getType();
+    var newProperties = args[0];
+
     // parent class static properties
     _self.forAllProps(function(prop, val, local) {
         if (!local) return;
@@ -124,7 +127,6 @@ infer.registerFunction("abitbolExtend", function(_self, args, argNodes) {
     });
 
     // parent class properties
-    var parentClassProperties = _self.getProp("prototype").getType();
     parentClassProperties.forAllProps(function(prop, val, local) {
         if (!local) return;
         if (_isJsPropertyToSkip(prop)) return;
@@ -135,15 +137,25 @@ infer.registerFunction("abitbolExtend", function(_self, args, argNodes) {
     });
 
     // new class static properties (__classvars__)
-    // TODO
+    var classvarsProperties = newProperties.hasProp("__classvars__");
+    if (classvarsProperties) {
+        classvarsProperties.forAllProps(function(prop, val, local) {
+            if (!local) return;
+            if (_isJsPropertyToSkip(prop)) return;
+            if (_isPrivate(prop) && hidePrivate) return;
+
+            val.propagate(abitbolClass.defProp(prop));
+        });
+    }
 
     // new class mixin properties (__include__)
     // TODO
 
     // new class properties / computed properties
-    var newProperties = args[0];
     newProperties.forAllProps(function(prop, val, local) {
         if (!local) return;
+        if (_isJsPropertyToSkip(prop)) return;
+        if (_isAbitbolSpecialProperty(prop)) return;
         if (_isPrivate(prop) && hidePrivate) return;
 
         val.propagate(abitbolClassPrototype.defProp(prop));
