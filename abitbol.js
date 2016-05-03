@@ -28,24 +28,14 @@ function _isAbitbolSpecialProperty(name) {
         "$name", "$computedPropertyName",
         "__include__", "__classvars__"
     ];
-    for (var i = 0 ; i < specialProp.length ; i++) {
-        if (specialProp[i] == name) {
-            return true;
-        }
-    }
-    return false;
+    return specialProp.indexOf(name) >= 0;
 }
 
 function _isJsPropertyToSkip(name) {
     var jsProp = [
         "constructor", "prototype"
     ];
-    for (var i = 0 ; i < jsProp.length ; i++) {
-        if (jsProp[i] == name) {
-            return true;
-        }
-    }
-    return false;
+    return jsProp.indexOf(name) >= 0;
 }
 
 function _getterToPropertyName(name) {
@@ -55,7 +45,7 @@ function _getterToPropertyName(name) {
     }
     var propName = name.slice(accessorNameLength, accessorNameLength + 1).toLowerCase();
     propName += name.slice(accessorNameLength + 1, name.length);
-    return  propName ;
+    return  propName;
 }
 
 
