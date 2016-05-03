@@ -9,9 +9,9 @@
 [Tern][tern] is a stand-alone code-analysis engine for JavaScript that can be used as
 text editor plugin to provide Javascript autocompletion.
 
-Tern [Abitbol](abitbol) is a Tern plugin that allows it to work with the
-Abitbol inheritance model (so it makes the autocompletion working with the
-Abitbol classes).
+Tern Abitbol is a Tern plugin that allows it to work with the
+[Abitbol][abitbol] inheritance model (so it makes the autocompletion working
+with the Abitbol classes).
 
 
 ## How To Install Abitbol Tern Plugin
