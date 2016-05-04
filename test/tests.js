@@ -170,9 +170,49 @@ describe("tern-abitbol", function() {
 
     });
 
-
     describe("mixins (__include__)", function() {
-        // TODO
+
+        it("are attached to the class prototype", function() {
+            return queryCompletion(server, "mixin.js", "var m = new MixinClass(); m.")
+                .then(function(response) {
+                    var properties = lodash.map(response.completions, "name");
+                    expect(properties).to.contain("methodA");
+                    expect(properties).to.contain("methodB");
+                    expect(properties).to.contain("methodC");
+                    expect(properties).to.contain("methodD");
+                    expect(properties).to.contain("getValueA");
+                    expect(properties).to.contain("valueA");
+                });
+        });
+
+        it("have the right override behaviour", function() {
+            return queryCompletion(server, "mixin.js", "var m = new MixinClass(); m.")
+                .then(function(response) {
+                    var completions = response.completions;
+                    expect(lodash.find(completions, {name: "methodA"}).type).to.contain("-> number");
+                    expect(lodash.find(completions, {name: "methodB"}).type).to.contain("-> string");
+                    expect(lodash.find(completions, {name: "methodC"}).type).to.contain("-> string");
+                    expect(lodash.find(completions, {name: "methodD"}).type).to.contain("-> bool");
+                });
+        });
+
+        it("__include__ is not included in classes static properties", function() {
+            return queryCompletion(server, "mixin.js", "MixinClass.")
+                .then(function(response) {
+                    var properties = lodash.map(response.completions, "name");
+                    expect(properties).not.to.contain("__include__");
+
+                });
+        });
+
+        it("__include__ is not included in classes properties", function() {
+            return queryCompletion(server, "mixin.js", "var m = new MixinClass(); m.")
+                .then(function(response) {
+                    var properties = lodash.map(response.completions, "name");
+                    expect(properties).not.to.contain("__include__");
+                });
+        });
+
     });
 
     describe("class static properties (__classvars__)", function() {
