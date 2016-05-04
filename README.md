@@ -64,5 +64,18 @@ A more complete example:
 ```
 
 
+## Changelog
+
+* **0.2.0:**
+  * Supports static properties (`__classvars__`)
+  * Supports mixins (`__include__`)
+  * Supports constructors (`__init__`)
+  * Support most of the Abitbol special properties (`$extend`, `$class`, `$map`
+    (incomplete), `$data`, `$super`)
+* **0.1.0:** Cleaned version
+* **0.0.0:** Basic POC (support inheritance, property inheritance and prototype
+  extension)
+
+
 [tern]: http://ternjs.net/
 [abitbol]: https://github.com/wanadev/abitbol/

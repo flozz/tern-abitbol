@@ -1,6 +1,6 @@
 {
   "name": "tern-abitbol",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Tern.js plugin to autocomplete Abitbol classes",
   "main": "abitbol.js",
   "scripts": {
