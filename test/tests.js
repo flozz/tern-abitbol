@@ -61,7 +61,34 @@ describe("tern-abitbol", function() {
     });
 
     describe("constructor", function() {
-        // TODO
+
+        it("arguments of the __init__ methods are proagated to the contructor", function() {
+            return queryCompletion(server, "simple-class.js", "var simpleClass = new SimpleClass")
+                .then(function(response) {
+                    var completions = response.completions;
+                    var constructor = lodash.find(completions, item => item.type.indexOf("fn(") === 0);
+                    expect(constructor.type).to.contain("valueA: number");
+                    expect(constructor.type).to.contain("valueB: string");
+                    expect(constructor.type).to.contain("valueC: bool");
+                });
+        });
+
+        it("__init__ is not available as static method", function() {
+            return queryCompletion(server, "simple-class.js", "SimpleClass.")
+                .then(function(response) {
+                    var properties = lodash.map(response.completions, "name");
+                    expect(properties).not.to.contain("__init__");
+                });
+        });
+
+        it("__init__ is available as instance method", function() {
+            return queryCompletion(server, "simple-class.js", "var simpleClass = new SimpleClass(); simpleClass.")
+                .then(function(response) {
+                    var properties = lodash.map(response.completions, "name");
+                    expect(properties).to.contain("__init__");
+                });
+        });
+
     });
 
     describe("abitbol special properties", function() {
@@ -305,8 +332,22 @@ describe("tern-abitbol", function() {
                 });
         });
 
-        it.skip("constructor of child class overrides the one of its parent", function() {
-            // TODO
+        it("constructor of child class overrides the one of its parent", function() {
+            return queryCompletion(server, "inheritance.js", "ClassB")
+                .then(function(response) {
+                    var completions = response.completions;
+                    var constructor = lodash.find(completions, item => item.type.indexOf("fn(") === 0);
+                    expect(constructor.type).to.contain("paramB");
+                });
+        });
+
+        it("parent classes are not affected by subclasses", function() {
+            return queryCompletion(server, "inheritance.js", "ClassA")
+                .then(function(response) {
+                    var completions = response.completions;
+                    var constructor = lodash.find(completions, item => item.type.indexOf("fn(") === 0);
+                    expect(constructor.type).to.contain("paramA");
+                });
         });
 
         it("classes inherites parent's classes static properties", function() {
