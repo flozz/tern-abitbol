@@ -122,16 +122,31 @@ var defs = {
 // plugin functions
 
 infer.registerFunction("abitbolExtend", function(_self, args, argNodes) {
-    var abitbolClass = new infer.Fn(_getUniqClassId(), new infer.AVal(), [], [], new infer.AVal());
+    var newProperties = args[0];
+
+    // Class / constructor
+    var constructor = newProperties.hasProp("__init__");
+    if (!constructor) constructor = _self.getProp("prototype").getType().hasProp("__init__");
+    var constructorArgs = [];
+    var constructorArgNames = [];
+
+    if (constructor) {
+        constructorArgs = constructor.getType().args;
+        constructorArgNames = constructor.getType().argNames;
+    }
+
+    var abitbolClass = new infer.Fn(_getUniqClassId(), new infer.AVal(), constructorArgs, constructorArgNames, new infer.AVal());
     var abitbolClassPrototype = abitbolClass.getProp("prototype").getType();
 
-    var parentClassProperties = _self.getProp("prototype").getType();
-    var newProperties = args[0];
+    if (constructor) {
+        constructor.propagate(abitbolClassPrototype.defProp("__init__"));
+    }
 
     // parent class static properties
     _propagateProperties(_self, abitbolClass, false);
 
     // parent class properties
+    var parentClassProperties = _self.getProp("prototype").getType();
     _propagateProperties(parentClassProperties, abitbolClassPrototype, false);
 
     // new class static properties (__classvars__)
@@ -149,9 +164,6 @@ infer.registerFunction("abitbolExtend", function(_self, args, argNodes) {
 
     // new class properties / computed properties
     _propagateProperties(newProperties, abitbolClassPrototype, true);
-
-    // new class constructor
-    // TODO
 
     // abitbol special properties
     // $extend
