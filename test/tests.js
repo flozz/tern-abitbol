@@ -152,6 +152,70 @@ describe("tern-abitbol", function() {
             });
 
             // TODO introspection data into $map
+            it("contains introspection categories", function() {
+                return queryCompletion(server, "simple-class.js", "SimpleClass.$map.")
+                    .then(function(response) {
+                        var properties = lodash.map(response.completions, "name");
+                        expect(properties).to.contain("attributes");
+                        expect(properties).to.contain("methods");
+                        expect(properties).to.contain("computedProperties");
+                    });
+            });
+
+            it("contains attributes' introspection data", function() {
+                return queryCompletion(server, "simple-class.js", "SimpleClass.$map.attributes.")
+                    .then(function(response) {
+                        var properties = lodash.map(response.completions, "name");
+                        expect(properties).to.contain("attrBoolean");
+                        expect(properties).to.contain("attrString");
+                        expect(properties).to.contain("attrNumber");
+                        expect(properties).to.contain("attrObject");
+                        expect(properties).to.contain("attrArray");
+                    });
+            });
+
+            it("contains methods' introspection data", function() {
+                return queryCompletion(server, "simple-class.js", "SimpleClass.$map.methods.")
+                    .then(function(response) {
+                        var properties = lodash.map(response.completions, "name");
+                        expect(properties).to.contain("__init__");
+                        expect(properties).to.contain("getValueA");
+                        expect(properties).to.contain("setValueA");
+                        expect(properties).to.contain("getValueB");
+                        expect(properties).to.contain("isValueC");
+                        expect(properties).to.contain("hasValueD");
+                        expect(properties).to.contain("method1");
+                    });
+            });
+
+            it("contains advanced methods' introspection data", function() {
+                return queryCompletion(server, "simple-class.js", "SimpleClass.$map.methods.method1.")
+                    .then(function(response) {
+                        var properties = lodash.map(response.completions, "name");
+                        expect(properties).to.contain("annotations");
+                    });
+            });
+
+            it("contains computed properties' introspection data", function() {
+                return queryCompletion(server, "simple-class.js", "SimpleClass.$map.computedProperties.")
+                    .then(function(response) {
+                        var properties = lodash.map(response.completions, "name");
+                        expect(properties).to.contain("valueA");
+                        expect(properties).to.contain("valueB");
+                        expect(properties).to.contain("valueC");
+                        expect(properties).to.contain("valueD");
+                    });
+            });
+
+            it("contains advanced computed properties' introspection data", function() {
+                return queryCompletion(server, "simple-class.js", "SimpleClass.$map.computedProperties.valueA.")
+                    .then(function(response) {
+                        var properties = lodash.map(response.completions, "name");
+                        expect(properties).to.contain("get");
+                        expect(properties).to.contain("set");
+                        expect(properties).to.contain("annotations");
+                    });
+            });
 
         });
 
@@ -278,10 +342,6 @@ describe("tern-abitbol", function() {
                     expect(properties).not.to.contain("__classvars__");
                 });
         });
-    });
-
-    describe("class introspection object ($map)", function() {
-        // TODO
     });
 
     describe("inheritance", function() {

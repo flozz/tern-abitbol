@@ -9,6 +9,6 @@
   "undef": true,
   "curly": false,
   "node": true,
-  "esnext": false,
-  "mocha": false
+  "esnext": true,
+  "mocha": true
 }
