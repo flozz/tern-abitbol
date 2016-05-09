@@ -66,6 +66,9 @@ A more complete example:
 
 ## Changelog
 
+* **1.0.0:**
+  * `$map.*` autocompletion
+  * First stable release!
 * **0.2.0:**
   * Supports static properties (`__classvars__`)
   * Supports mixins (`__include__`)
