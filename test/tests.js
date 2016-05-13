@@ -446,4 +446,32 @@ describe("tern-abitbol", function() {
 
     });
 
+    describe("classes name", function() {
+
+        it("is found when the class is assigned to a variable that looks like a class name", function() {
+            return queryCompletion(server, "class-name.js", "factories.namedClassVarFactory", {fakeFileName: "app/js/file1.js"})
+                .then(function(response) {
+                    expect(response.completions[0].type.toString()).to.equal("fn() -> (file1.js).NamedClassVar");
+                });
+
+        });
+
+        it("is found when the class is declared as an object property that looks like a class name", function() {
+            return queryCompletion(server, "class-name.js", "factories.namedClassObject1", {fakeFileName: "app/js/file2.js"})
+                .then(function(response) {
+                    expect(response.completions[0].type.toString()).to.equal("fn() -> (file2.js).NamedClassObject1");
+                });
+
+        });
+
+        it("is found when the class is assigned to an object property that looks like a class name", function() {
+            return queryCompletion(server, "class-name.js", "factories.namedClassObject2", {fakeFileName: "app/js/file3.js"})
+                .then(function(response) {
+                    expect(response.completions[0].type.toString()).to.equal("fn() -> (file3.js).NamedClassObject2");
+                });
+
+        });
+
+    });
+
 });

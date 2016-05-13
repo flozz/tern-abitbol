@@ -1,5 +1,7 @@
 "use strict";
 
+var path = require("path");
+
 var tern = require("tern/lib/tern");
 var infer = require("tern/lib/infer");
 
@@ -11,6 +13,29 @@ var _classUniqId = 0;
 function _getUniqClassId() {
     _classUniqId += 1;
     return "AbitbolClass" + _classUniqId;
+}
+
+function _getClassName(extendArgNode) {
+
+    function _getVariableName(text, argStart) {
+        var varRegexp = /^.*(var\s+|let\s+|const\s+|\s|\.)([A-Z][A-Za-z0-9_]*)\s*(=|:)\s*([A-Z][A-Za-z0-9_]*)\.\$extend\($/;
+        var buff = text.substr(0, argStart).replace(/\r?\n/g, " ");
+        if (buff.match(varRegexp)) {
+            return buff.replace(varRegexp, "$2");
+        }
+    }
+
+    if (!extendArgNode) {
+        return _getUniqClassId();
+    }
+
+    var className = _getVariableName(extendArgNode.sourceFile.text, extendArgNode.start);
+
+    if (!className) {
+        className = _getUniqClassId();
+    }
+
+    return "(" + path.basename(extendArgNode.sourceFile.name) + ")." + className;
 }
 
 function _isPrivate(name) {
@@ -202,7 +227,7 @@ infer.registerFunction("abitbolExtend", function(_self, args, argNodes) {
         constructorArgNames = constructor.getType().argNames;
     }
 
-    var abitbolClass = new infer.Fn(_getUniqClassId(), new infer.AVal(), constructorArgs, constructorArgNames, new infer.AVal());
+    var abitbolClass = new infer.Fn(_getClassName(argNodes[0]), new infer.AVal(), constructorArgs, constructorArgNames, new infer.AVal());
     var abitbolClassPrototype = abitbolClass.getProp("prototype").getType();
 
     if (constructor) {

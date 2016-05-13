@@ -20,9 +20,10 @@ function runServer() {
     return server;
 }
 
-function queryCompletion(server, fileName, expression) {
+function queryCompletion(server, fileName, expression, options) {
+    options = options || {};
+    var fakeFileName = options.fakeFileName || uuid.v4() + ".js";
     var fileContent;
-    var fakeFileName = uuid.v4() + ".js";
 
     if (fileName) {
         fileContent = fs.readFileSync(__dirname + "/samples/" + fileName);
