@@ -457,7 +457,7 @@ describe("tern-abitbol", function() {
         });
 
         it("is found when the class is declared as an object property that looks like a class name", function() {
-            return queryCompletion(server, "class-name.js", "factories.namedClassObject1", {fakeFileName: "app/js/file2.js"})
+            return queryCompletion(server, "class-name.js", "factories.namedClassObject1Factory", {fakeFileName: "app/js/file2.js"})
                 .then(function(response) {
                     expect(response.completions[0].type.toString()).to.equal("fn() -> (file2.js).NamedClassObject1");
                 });
@@ -465,9 +465,17 @@ describe("tern-abitbol", function() {
         });
 
         it("is found when the class is assigned to an object property that looks like a class name", function() {
-            return queryCompletion(server, "class-name.js", "factories.namedClassObject2", {fakeFileName: "app/js/file3.js"})
+            return queryCompletion(server, "class-name.js", "factories.namedClassObject2Factory", {fakeFileName: "app/js/file3.js"})
                 .then(function(response) {
                     expect(response.completions[0].type.toString()).to.equal("fn() -> (file3.js).NamedClassObject2");
+                });
+
+        });
+
+        it("is found when the class is inherited from a class that have a namespaced name", function() {
+            return queryCompletion(server, "class-name.js", "factories.namedClassVar2Factory", {fakeFileName: "app/js/file4.js"})
+                .then(function(response) {
+                    expect(response.completions[0].type.toString()).to.equal("fn() -> (file4.js).NamedClassVar2");
                 });
 
         });

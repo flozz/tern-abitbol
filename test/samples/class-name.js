@@ -16,6 +16,8 @@ classes.NamedClassObject2 = Class.$extend({
     method1: function() {}
 });
 
+var NamedClassVar2 = classes.NamedClassObject1.$extend({});
+
 var factories = {
     namedClassVarFactory: function() {
         return new NamedClassVar();
@@ -27,6 +29,10 @@ var factories = {
 
     namedClassObject2Factory: function() {
         return new classes.NamedClassObject2();
+    },
+
+    namedClassVar2Factory: function() {
+        return new NamedClassVar2();
     }
 
 };

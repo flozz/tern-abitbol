@@ -18,7 +18,7 @@ function _getUniqClassId() {
 function _getClassName(extendArgNode) {
 
     function _getVariableName(text, argStart) {
-        var varRegexp = /^.*(var\s+|let\s+|const\s+|\s|\.)([A-Z][A-Za-z0-9_]*)\s*(=|:)\s*([A-Z][A-Za-z0-9_]*)\.\$extend\($/;
+        var varRegexp = /^.*(var\s+|let\s+|const\s+|\s|\.)([A-Z][A-Za-z0-9_]*)\s*(=|:)\s*([A-Za-z0-9_.-]*[A-Z][A-Za-z0-9_]*)\.\$extend\($/;
         var buff = text.substr(0, argStart).replace(/\r?\n/g, " ");
         if (buff.match(varRegexp)) {
             return buff.replace(varRegexp, "$2");
