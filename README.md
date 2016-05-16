@@ -66,6 +66,7 @@ A more complete example:
 
 ## Changelog
 
+* **1.1.1:** Find class names when parent's class name is name-spaced (`foo.bar.ClassName`)
 * **1.1.0:** Improves class names (`(file.js).ClassVariableName` instead of `AbitbolClassN`)
 * **1.0.0:**
   * `$map.*` autocompletion
